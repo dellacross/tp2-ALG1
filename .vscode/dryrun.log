@@ -1,0 +1,8 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/dellacross/ALG1/tp2-ALG1'
+make: Leaving directory '/home/dellacross/ALG1/tp2-ALG1'
+ 
+make: *** No rule to make target 'include/map.hpp', needed by 'obj/map.o'.
+make: *** No rule to make target 'src/map.cpp', needed by 'obj/map.o'.
+make: *** No rule to make target 'src/main.cpp', needed by 'obj/main.o'.
+
