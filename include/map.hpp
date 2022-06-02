@@ -8,6 +8,11 @@
 
 using namespace std;
 
+class City
+{
+    City *adjCitys;
+};
+
 class Map
 {
     public:

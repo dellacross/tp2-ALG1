@@ -35,11 +35,19 @@ void Map::uptadeMapMatrix(fstream &file)
     }
 }
 
+bool haveUnvisited(bool *v, int n)
+{
+    for(int i = 0; i < n; i++)
+        if(!v[i])
+            return true;
+    return false; 
+}
+
 void Map::findMax(int o, int d)
 {
     o--;
     d--;
-    int aux = o, c = -1, heavy = 0, radar = 1, pa = 0;
+    int aux = o, c = -1, heaviest = 0, radar = 1, pa = 0;
     bool visited[numberOfCitys];
     int path[numberOfCitys - 1];
     queue<int> pp;
@@ -53,23 +61,33 @@ void Map::findMax(int o, int d)
     path[0] = o;
     visited[o] = true;
 
-    while (!visited[d])
+    while (haveUnvisited(visited, numberOfCitys))
     {
-        for (int j = 0; j < numberOfCitys; j++)
+        for (int j = 0 ; j < numberOfCitys; j++)
         {
-            if (((pa == 0 && mapMatrix[aux][j] > heavy) || (pa != 0 && mapMatrix[aux][j] <= pa)) && !visited[j])
+            //cout << "mapMatrix[" << aux << "][" << j << "]: " << mapMatrix[aux][j] << "\n";
+            //cout << "heaviest: " << heaviest << "\n";
+            if (mapMatrix[aux][j] > heaviest && !visited[j])
             {
-                heavy = mapMatrix[aux][j];
+                heaviest = mapMatrix[aux][j];
                 c = j;
             }
 
+            //cout << "j: " << j << " == " << d << "? \n";
             if(j == d)
-                pp.push(mapMatrix[aux][j]);
+            {
+                //cout << "Sim!" << "\n";
+                if(mapMatrix[aux][j] > pa && pa != 0)
+                    pp.push(pa);
+                else
+                    pp.push(mapMatrix[aux][j]);
+            }
         }
 
         aux = c;
+        //cout << "aux: " << aux << "\n";
         visited[aux] = true;
-        if (heavy == 0)
+        if (heaviest == 0)
         {
             path[radar] = -1;
             radar--;
@@ -79,27 +97,27 @@ void Map::findMax(int o, int d)
         {
             path[radar] = aux;
             radar++;
-            if(pa == 0 || heavy <= pa)
-                pa = heavy;
-            cout << "pa: " << pa << "\n";
+            if(pa == 0 || heaviest <= pa)
+                pa = heaviest;
+            //cout << "pa: " << pa << "\n";
         }
-        heavy = 0;
+        heaviest = 0;
         c = -1;
     }
 
     pp.push(pa);
     int maior = 0;
 
-    cout << "Vector:" << "\n";
+    //cout << "Vector:" << "\n";
     while(!pp.empty())
     {
-        cout << pp.front() << " ";
+        //cout << pp.front() << " ";
         if(pp.front() > maior)
             maior = pp.front();
         pp.pop();
     }
     
-    cout << "\n" << maior << "\n";
+    cout << maior << "\n";
 }
 
 void Map::leitor(fstream &file)
@@ -111,7 +129,7 @@ void Map::leitor(fstream &file)
         getline(file, line);
         stringstream lineStream(line);
         lineStream >> source >> destiny;
-        cout << "source: " << source << " destiny: " << destiny << "\n";
+        //cout << "source: " << source << " destiny: " << destiny << "\n";
         findMax(source, destiny);
     }
 }
