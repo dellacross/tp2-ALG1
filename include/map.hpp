@@ -22,10 +22,6 @@ class Map
         void uptadeMapMatrix(fstream &file);
         void leitor(fstream &file);
         void findMax(int o, int d);
-
-        void print();
-
-
     private:
         int **mapMatrix;
         int numberOfCitys;

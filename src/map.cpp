@@ -12,8 +12,6 @@ Map::Map(fstream &file)
     initMapMatrix();
     uptadeMapMatrix(file);
     leitor(file);
-
-    //print();
 }
 
 void Map::initMapMatrix()
@@ -44,23 +42,24 @@ bool haveUnvisited(bool *v, int n)
     return false; 
 }
 
-void Map::findMax(int o, int d)
+void Map::findMax(int source, int destiny)
 {
-    o--;
-    d--;
+    source--;
+    destiny--;
+
     int updtNumOfPaths = 0, numOfPaths = 1; 
     pair<int, int> initCity, moveAux;
-    queue<int> pp; 
+    queue<int> possibleWeights; 
     queue<pair<int, int>> adjCitys;            
     bool visited[numberOfCitys];              
 
     for (int i = 0; i < numberOfCitys; i++)
         visited[i] = false;
 
-    initCity.first = o;
+    initCity.first = source;
     initCity.second = 0;
     adjCitys.push(initCity);
-    visited[initCity.first] = true;
+    visited[source] = true;
 
     while (!adjCitys.empty())
     {
@@ -79,16 +78,16 @@ void Map::findMax(int o, int d)
                     if(mapMatrix[auxC][i] < auxW)
                         moveAux.second = mapMatrix[auxC][i];
 
-                if(i == d)
+                if(i == destiny)
                 {
                     if(auxW == 0)
-                        pp.push(mapMatrix[auxC][i]);
+                        possibleWeights.push(mapMatrix[auxC][i]);
                     else
                     {
                         if(mapMatrix[auxC][i] < auxW)
-                            pp.push(mapMatrix[auxC][i]);
+                            possibleWeights.push(mapMatrix[auxC][i]);
                         else
-                            pp.push(auxW);
+                            possibleWeights.push(auxW);
                     }
                 }
                 else
@@ -111,11 +110,11 @@ void Map::findMax(int o, int d)
     }
 
     int maior = 0;
-    while(!pp.empty())
+    while(!possibleWeights.empty())
     {
-        if(pp.front() > maior)
-            maior = pp.front();
-        pp.pop();
+        if(possibleWeights.front() > maior)
+            maior = possibleWeights.front();
+        possibleWeights.pop();
     }
     cout << maior << "\n";
 }
@@ -130,17 +129,5 @@ void Map::leitor(fstream &file)
         stringstream lineStream(line);
         lineStream >> source >> destiny;
         findMax(source, destiny);
-    }
-}
-
-void Map::print()
-{
-    cout << "MapMatrix: "
-         << "\n";
-    for (int i = 0; i < numberOfCitys; i++)
-    {
-        for (int j = 0; j < numberOfCitys; j++)
-            cout << mapMatrix[i][j] << " ";
-        cout << "\n";
     }
 }
