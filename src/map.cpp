@@ -34,14 +34,6 @@ void Map::uptadeMapMatrix(fstream &file)
     }
 }
 
-bool haveUnvisited(bool *v, int n)
-{
-    for(int i = 0; i < n; i++)
-        if(!v[i])
-            return true;
-    return false; 
-}
-
 void Map::findMax(int source, int destiny)
 {
     source--;
