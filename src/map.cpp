@@ -1,6 +1,5 @@
 #include "map.hpp"
 #include <queue>
-#include <vector>
 
 Map::Map(fstream &file)
 {
@@ -39,11 +38,11 @@ void Map::findMax(int source, int destiny)
     source--;
     destiny--;
 
-    int updtNumOfPaths = 0, numOfPaths = 1; 
+    int updtNumOfPaths = 0, numOfPaths = 1;
     pair<int, int> initCity, moveAux;
-    queue<int> possibleWeights; 
-    queue<pair<int, int>> adjCitys;            
-    bool visited[numberOfCitys];              
+    queue<int> possibleWeights;
+    queue<pair<int, int>> adjCitys;
+    bool visited[numberOfCitys];
 
     for (int i = 0; i < numberOfCitys; i++)
         visited[i] = false;
@@ -59,24 +58,23 @@ void Map::findMax(int source, int destiny)
         int auxW = adjCitys.front().second;
         adjCitys.pop();
 
-        for(int i = 0 && i != auxC; i < numberOfCitys; i++)
+        for (int i = 0 && i != auxC; i < numberOfCitys; i++)
         {
-            if(!visited[i] && mapMatrix[auxC][i] > 0)
+            if (!visited[i] && mapMatrix[auxC][i] > 0)
             {
                 moveAux.first = i;
-                if(auxW == 0)
+                if (auxW == 0)
                     moveAux.second = mapMatrix[auxC][i];
-                else
-                    if(mapMatrix[auxC][i] < auxW)
-                        moveAux.second = mapMatrix[auxC][i];
+                else if (mapMatrix[auxC][i] < auxW)
+                    moveAux.second = mapMatrix[auxC][i];
 
-                if(i == destiny)
+                if (i == destiny)
                 {
-                    if(auxW == 0)
+                    if (auxW == 0)
                         possibleWeights.push(mapMatrix[auxC][i]);
                     else
                     {
-                        if(mapMatrix[auxC][i] < auxW)
+                        if (mapMatrix[auxC][i] < auxW)
                             possibleWeights.push(mapMatrix[auxC][i]);
                         else
                             possibleWeights.push(auxW);
@@ -93,18 +91,17 @@ void Map::findMax(int source, int destiny)
 
         numOfPaths--;
 
-        if(numOfPaths == 0)
+        if (numOfPaths == 0)
         {
             numOfPaths = updtNumOfPaths;
             updtNumOfPaths = 0;
         }
-
     }
 
     int maior = 0;
-    while(!possibleWeights.empty())
+    while (!possibleWeights.empty())
     {
-        if(possibleWeights.front() > maior)
+        if (possibleWeights.front() > maior)
             maior = possibleWeights.front();
         possibleWeights.pop();
     }
