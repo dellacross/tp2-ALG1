@@ -1,5 +1,6 @@
 #include "map.hpp"
 #include <queue>
+#include <vector>
 
 Map::Map(fstream &file)
 {
@@ -47,76 +48,75 @@ void Map::findMax(int o, int d)
 {
     o--;
     d--;
-    int aux = o, c = -1, heaviest = 0, radar = 1, pa = 0;
-    bool visited[numberOfCitys];
-    int path[numberOfCitys - 1];
-    queue<int> pp;
+    int updtNumOfPaths = 0, numOfPaths = 1; 
+    pair<int, int> initCity, moveAux;
+    queue<int> pp; 
+    queue<pair<int, int>> adjCitys;            
+    bool visited[numberOfCitys];              
 
     for (int i = 0; i < numberOfCitys; i++)
         visited[i] = false;
 
-    for (int i = 0; i < numberOfCitys-1; i++)
-        path[i] = -1;
+    initCity.first = o;
+    initCity.second = 0;
+    adjCitys.push(initCity);
+    visited[initCity.first] = true;
 
-    path[0] = o;
-    visited[o] = true;
-
-    while (haveUnvisited(visited, numberOfCitys))
+    while (!adjCitys.empty())
     {
-        for (int j = 0 ; j < numberOfCitys; j++)
-        {
-            //cout << "mapMatrix[" << aux << "][" << j << "]: " << mapMatrix[aux][j] << "\n";
-            //cout << "heaviest: " << heaviest << "\n";
-            if (mapMatrix[aux][j] > heaviest && !visited[j])
-            {
-                heaviest = mapMatrix[aux][j];
-                c = j;
-            }
+        int auxC = adjCitys.front().first;
+        int auxW = adjCitys.front().second;
+        adjCitys.pop();
 
-            //cout << "j: " << j << " == " << d << "? \n";
-            if(j == d)
+        for(int i = 0 && i != auxC; i < numberOfCitys; i++)
+        {
+            if(!visited[i] && mapMatrix[auxC][i] > 0)
             {
-                //cout << "Sim!" << "\n";
-                if(mapMatrix[aux][j] > pa && pa != 0)
-                    pp.push(pa);
+                moveAux.first = i;
+                if(auxW == 0)
+                    moveAux.second = mapMatrix[auxC][i];
                 else
-                    pp.push(mapMatrix[aux][j]);
+                    if(mapMatrix[auxC][i] < auxW)
+                        moveAux.second = mapMatrix[auxC][i];
+
+                if(i == d)
+                {
+                    if(auxW == 0)
+                        pp.push(mapMatrix[auxC][i]);
+                    else
+                    {
+                        if(mapMatrix[auxC][i] < auxW)
+                            pp.push(mapMatrix[auxC][i]);
+                        else
+                            pp.push(auxW);
+                    }
+                }
+                else
+                {
+                    adjCitys.push(moveAux);
+                    visited[i] = true;
+                    updtNumOfPaths++;
+                }
             }
         }
 
-        aux = c;
-        //cout << "aux: " << aux << "\n";
-        visited[aux] = true;
-        if (heaviest == 0)
+        numOfPaths--;
+
+        if(numOfPaths == 0)
         {
-            path[radar] = -1;
-            radar--;
-            aux = path[radar];
+            numOfPaths = updtNumOfPaths;
+            updtNumOfPaths = 0;
         }
-        else
-        {
-            path[radar] = aux;
-            radar++;
-            if(pa == 0 || heaviest <= pa)
-                pa = heaviest;
-            //cout << "pa: " << pa << "\n";
-        }
-        heaviest = 0;
-        c = -1;
+
     }
 
-    pp.push(pa);
     int maior = 0;
-
-    //cout << "Vector:" << "\n";
     while(!pp.empty())
     {
-        //cout << pp.front() << " ";
         if(pp.front() > maior)
             maior = pp.front();
         pp.pop();
     }
-    
     cout << maior << "\n";
 }
 
@@ -129,7 +129,6 @@ void Map::leitor(fstream &file)
         getline(file, line);
         stringstream lineStream(line);
         lineStream >> source >> destiny;
-        //cout << "source: " << source << " destiny: " << destiny << "\n";
         findMax(source, destiny);
     }
 }
