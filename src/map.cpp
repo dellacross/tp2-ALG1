@@ -9,8 +9,6 @@ Map::Map(fstream &file)
 
     lineStream >> numberOfCitys >> numberOfHighways >> numberOfQueries;
     initMapMatrix();
-    uptadeMapMatrix(file);
-    leitor(file);
 }
 
 void Map::initMapMatrix()

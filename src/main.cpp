@@ -5,7 +5,11 @@ int main(int argc, char *argv[])
     fstream file(argv[1]);
 
     if (file)
+    {
         Map map(file);
+        map.uptadeMapMatrix(file);
+        map.leitor(file);
+    }
     else
         cout << "ERROR: FILE NOT FOUND!"
              << "\n";
