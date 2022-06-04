@@ -1,29 +1,23 @@
-#include <stdio.h>
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <string>
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
 
 using namespace std;
 
 class Map
 {
-    public:
-        Map(fstream &file);
+public:
+    Map(fstream &file);
 
-        void initMapMatrix();
-        void uptadeMapMatrix(fstream &file);
-        void leitor(fstream &file);
-        void findMax(int o, int d);
+    void initMapMatrix();
+    void uptadeMapMatrix(fstream &file);
+    void leitor(fstream &file);
+    void findMax(int source, int destiny);
 
-        void print();
-
-
-    private:
-        int **mapMatrix;
-        int numberOfCitys;
-        int numberOfQueries;
-        int numberOfHighways;
+private:
+    int **mapMatrix;
+    int numberOfCitys;
+    int numberOfQueries;
+    int numberOfHighways;
 };
