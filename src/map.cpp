@@ -11,8 +11,6 @@ Map::Map(fstream &file)
     initMapMatrix();
     uptadeMapMatrix(file);
     leitor(file);
-
-    //print();
 }
 
 void Map::initMapMatrix()
@@ -35,71 +33,79 @@ void Map::uptadeMapMatrix(fstream &file)
     }
 }
 
-void Map::findMax(int o, int d)
+void Map::findMax(int source, int destiny)
 {
-    o--;
-    d--;
-    int aux = o, c = -1, heavy = 0, radar = 1, pa = 0;
+    source--;
+    destiny--;
+
+    int updtNumOfPaths = 0, numOfPaths = 1;
+    pair<int, int> initCity, moveAux;
+    queue<int> possibleWeights;
+    queue<pair<int, int>> adjCitys;
     bool visited[numberOfCitys];
-    int path[numberOfCitys - 1];
-    queue<int> pp;
 
     for (int i = 0; i < numberOfCitys; i++)
         visited[i] = false;
 
-    for (int i = 0; i < numberOfCitys-1; i++)
-        path[i] = -1;
+    initCity.first = source;
+    initCity.second = 0;
+    adjCitys.push(initCity);
+    visited[source] = true;
 
-    path[0] = o;
-    visited[o] = true;
-
-    while (!visited[d])
+    while (!adjCitys.empty())
     {
-        for (int j = 0; j < numberOfCitys; j++)
+        int auxC = adjCitys.front().first;
+        int auxW = adjCitys.front().second;
+        adjCitys.pop();
+
+        for (int i = 0 && i != auxC; i < numberOfCitys; i++)
         {
-            if (((pa == 0 && mapMatrix[aux][j] > heavy) || (pa != 0 && mapMatrix[aux][j] <= pa)) && !visited[j])
+            if (!visited[i] && mapMatrix[auxC][i] > 0)
             {
-                heavy = mapMatrix[aux][j];
-                c = j;
+                moveAux.first = i;
+                if (auxW == 0)
+                    moveAux.second = mapMatrix[auxC][i];
+                else if (mapMatrix[auxC][i] < auxW)
+                    moveAux.second = mapMatrix[auxC][i];
+
+                if (i == destiny)
+                {
+                    if (auxW == 0)
+                        possibleWeights.push(mapMatrix[auxC][i]);
+                    else
+                    {
+                        if (mapMatrix[auxC][i] < auxW)
+                            possibleWeights.push(mapMatrix[auxC][i]);
+                        else
+                            possibleWeights.push(auxW);
+                    }
+                }
+                else
+                {
+                    adjCitys.push(moveAux);
+                    visited[i] = true;
+                    updtNumOfPaths++;
+                }
             }
-
-            if(j == d)
-                pp.push(mapMatrix[aux][j]);
         }
 
-        aux = c;
-        visited[aux] = true;
-        if (heavy == 0)
+        numOfPaths--;
+
+        if (numOfPaths == 0)
         {
-            path[radar] = -1;
-            radar--;
-            aux = path[radar];
+            numOfPaths = updtNumOfPaths;
+            updtNumOfPaths = 0;
         }
-        else
-        {
-            path[radar] = aux;
-            radar++;
-            if(pa == 0 || heavy <= pa)
-                pa = heavy;
-            cout << "pa: " << pa << "\n";
-        }
-        heavy = 0;
-        c = -1;
     }
 
-    pp.push(pa);
     int maior = 0;
-
-    cout << "Vector:" << "\n";
-    while(!pp.empty())
+    while (!possibleWeights.empty())
     {
-        cout << pp.front() << " ";
-        if(pp.front() > maior)
-            maior = pp.front();
-        pp.pop();
+        if (possibleWeights.front() > maior)
+            maior = possibleWeights.front();
+        possibleWeights.pop();
     }
-    
-    cout << "\n" << maior << "\n";
+    cout << maior << "\n";
 }
 
 void Map::leitor(fstream &file)
@@ -111,19 +117,6 @@ void Map::leitor(fstream &file)
         getline(file, line);
         stringstream lineStream(line);
         lineStream >> source >> destiny;
-        cout << "source: " << source << " destiny: " << destiny << "\n";
         findMax(source, destiny);
-    }
-}
-
-void Map::print()
-{
-    cout << "MapMatrix: "
-         << "\n";
-    for (int i = 0; i < numberOfCitys; i++)
-    {
-        for (int j = 0; j < numberOfCitys; j++)
-            cout << mapMatrix[i][j] << " ";
-        cout << "\n";
     }
 }
