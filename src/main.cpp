@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     {
         Map map(file);
         map.uptadeMapMatrix(file);
-        map.leitor(file);
+        map.reader(file);
     }
     else
         cout << "ERROR: FILE NOT FOUND!"
