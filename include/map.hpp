@@ -10,9 +10,11 @@ class Map
 public:
     /**
      * @brief Construct a new Map object
-     * @param file with the data
+     * @param nCitys 
+     * @param nHighways 
+     * @param nQueries 
      */
-    Map(fstream &file);
+    Map(int nCitys, int nHighways, int nQueries);
 
     /**
      * @brief Destroy the Map object
@@ -25,19 +27,15 @@ public:
     void initMapMatrix();
 
     /**
-     * @brief update the map matrix data
-     * @param file with the data
+     * @brief 
+     * @param sourceCity 
+     * @param destinyCity 
+     * @param weight 
      */
-    void uptadeMapMatrix(fstream &file);
+    void uptadeMapMatrix(int sourceCity, int destinyCity, int weight);
 
     /**
-     * @brief read the queries
-     * @param file with the data
-     */
-    void reader(fstream &file);
-
-    /**
-     * @brief find the maximal weight of a path
+     * @brief find the maximal weight of each query
      * @param source is the city where the path starts
      * @param destiny is the city where the path ends
      */

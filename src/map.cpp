@@ -1,13 +1,11 @@
 #include "map.hpp"
 #include <queue>
 
-Map::Map(fstream &file)
+Map::Map(int nCitys, int nHighways, int nQueries)
 {
-    string line = "";
-    getline(file, line);
-    stringstream lineStream(line);
-
-    lineStream >> numberOfCitys >> numberOfHighways >> numberOfQueries;
+    numberOfCitys = nCitys;
+    numberOfHighways = nHighways;
+    numberOfCitys = nQueries;
     initMapMatrix();
 }
 
@@ -18,17 +16,9 @@ void Map::initMapMatrix()
         mapMatrix[i] = new int[numberOfCitys];
 }
 
-void Map::uptadeMapMatrix(fstream &file)
+void Map::uptadeMapMatrix(int sourceCity, int destinyCity, int weight)
 {
-    string line = "";
-    int x, y, maximumWeight;
-    for (int i = 0; i < numberOfHighways; i++)
-    {
-        getline(file, line);
-        stringstream lineStream(line);
-        lineStream >> x >> y >> maximumWeight;
-        mapMatrix[x - 1][y - 1] = maximumWeight;
-    }
+    mapMatrix[sourceCity - 1][destinyCity - 1] = weight;
 }
 
 void Map::findMax(int source, int destiny)
@@ -36,8 +26,8 @@ void Map::findMax(int source, int destiny)
     source--;
     destiny--;
 
-    int updtNumOfPaths = 0, numOfPaths = 1; /* numOfPaths: number of paths | uptdNumOfPaths: aux to update the number of paths */
-    pair<int, int> initCity, moveAux;       /* initCity: city where the search begins | moveAux: */
+    int updtNumOfPaths = 0, numOfPaths = 1; /* numOfPaths: number of paths */
+    pair<int, int> initCity, moveAux;       /* initCity: city where the search begins */
     queue<int> possibleWeights;             /* possibleWeights: queue that store all weights of a path between two citys */
     queue<pair<int, int>> adjCitys;         /* adjCitys: queue that store the adjacent citys of the current city on the search */
     bool visited[numberOfCitys];            /* visited[i]: if city i has already visited, visited[i] == true, else, visited[i] == false */
@@ -47,7 +37,7 @@ void Map::findMax(int source, int destiny)
 
     initCity.first = source;
     initCity.second = 0;
-    adjCitys.push(initCity); /* push the initial city to the adjCitys queue */
+    adjCitys.push(initCity); /* push the initial city into the adjCitys queue */
     visited[source] = true;  /* set the initial city as visited */
 
     while (!adjCitys.empty())
@@ -68,8 +58,8 @@ void Map::findMax(int source, int destiny)
 
                 if (i == destiny) /* if the current city is the destiny */
                 {
-                    if (auxWeight == 0) /* if the current maximal weight of the path is == 0 */
-                        possibleWeights.push(mapMatrix[auxCity][i]);
+                    if (auxWeight == 0)                              /* if the current maximal weight of the path is == 0 */
+                        possibleWeights.push(mapMatrix[auxCity][i]); /* push the weight between city auxCity and city i into the possibleWeights queue */
                     else
                     {
                         if (mapMatrix[auxCity][i] < auxWeight) /* if the weight of the current highway is lower than the current maximal weight */
@@ -81,7 +71,7 @@ void Map::findMax(int source, int destiny)
                 else
                 {
                     adjCitys.push(moveAux); /* push the current city into the adjCitys queue */
-                    visited[i] = true;      /* set the city is as visited */
+                    visited[i] = true;      /* set the city i as visited */
                     updtNumOfPaths++;
                 }
             }
@@ -96,27 +86,15 @@ void Map::findMax(int source, int destiny)
         }
     }
 
+    visited[destiny] = true; /* find all possible weights*/
     int maior = 0;
-    while (!possibleWeights.empty()) /* find the maximal weight possible between all possibles weights of the path */
+    while (!possibleWeights.empty()) /* find the maximal weight possible between all possible weights of the path */
     {
         if (possibleWeights.front() > maior)
             maior = possibleWeights.front();
         possibleWeights.pop();
     }
     cout << maior << "\n"; /* print the maximal weight of the path */
-}
-
-void Map::reader(fstream &file)
-{
-    string line = "";
-    int source, destiny;
-    for (int i = 0; i < numberOfQueries; i++)
-    {
-        getline(file, line);
-        stringstream lineStream(line);
-        lineStream >> source >> destiny;
-        findMax(source, destiny);
-    }
 }
 
 Map::~Map()

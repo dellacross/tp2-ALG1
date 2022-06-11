@@ -2,17 +2,22 @@
 
 int main(int argc, char *argv[])
 {
-    fstream file(argv[1]);
+    int numberOfCitys, numberOfHighways, numberOfQueries, sourceCity, destinyCity, weight, sourceDestinyCity, queryDestinyCity;
+    cin >> numberOfCitys >> numberOfHighways >> numberOfQueries;
+    
+    Map map(numberOfCitys, numberOfHighways, numberOfQueries);
 
-    if (file)
+    for (int i = 0; i < numberOfHighways; i++)
     {
-        Map map(file);
-        map.uptadeMapMatrix(file);
-        map.reader(file);
+        cin >> sourceCity >> destinyCity >> weight;
+        map.uptadeMapMatrix(sourceCity, destinyCity, weight);
     }
-    else
-        cout << "ERROR: FILE NOT FOUND!"
-             << "\n";
+
+    for (int j = 0; j < numberOfQueries; j++)
+    {
+        cin >> sourceDestinyCity >> queryDestinyCity;
+        map.findMax(sourceDestinyCity, queryDestinyCity);
+    }
 
     return 0;
 }
