@@ -3,9 +3,9 @@
 
 Map::Map(int nCitys, int nHighways, int nQueries)
 {
-    numberOfCitys = nCitys;
-    numberOfHighways = nHighways;
-    numberOfQueries = nQueries;
+    numberOfCitys = nCitys; /* set the number of citys */
+    numberOfHighways = nHighways; /* set the number of highways */
+    numberOfQueries = nQueries; /* set the number of queries */
     initMapMatrix();
 }
 
