@@ -10,9 +10,9 @@ class Map
 public:
     /**
      * @brief Construct a new Map object
-     * @param nCitys 
-     * @param nHighways 
-     * @param nQueries 
+     * @param nCitys number of citys 
+     * @param nHighways number of highways
+     * @param nQueries number of queries
      */
     Map(int nCitys, int nHighways, int nQueries);
 
@@ -27,15 +27,15 @@ public:
     void initMapMatrix();
 
     /**
-     * @brief 
+     * @brief update the mapMatrix
      * @param sourceCity 
      * @param destinyCity 
-     * @param weight 
+     * @param weight maximum weight supported by the highway between the sourceCity and the destinyCity
      */
-    void uptadeMapMatrix(int sourceCity, int destinyCity, int weight);
+    void uptadeMapMatrix(int sourceCity, int destinyCity, int weight) { mapMatrix[sourceCity - 1][destinyCity - 1] = weight; };
 
     /**
-     * @brief find the maximal weight of each query
+     * @brief find the maximal weight of each query using BFS (Breadth First Search)
      * @param source is the city where the path starts
      * @param destiny is the city where the path ends
      */

@@ -5,7 +5,7 @@ Map::Map(int nCitys, int nHighways, int nQueries)
 {
     numberOfCitys = nCitys;
     numberOfHighways = nHighways;
-    numberOfCitys = nQueries;
+    numberOfQueries = nQueries;
     initMapMatrix();
 }
 
@@ -14,11 +14,6 @@ void Map::initMapMatrix()
     mapMatrix = new int *[numberOfCitys];
     for (int i = 0; i < numberOfCitys; i++)
         mapMatrix[i] = new int[numberOfCitys];
-}
-
-void Map::uptadeMapMatrix(int sourceCity, int destinyCity, int weight)
-{
-    mapMatrix[sourceCity - 1][destinyCity - 1] = weight;
 }
 
 void Map::findMax(int source, int destiny)
@@ -58,15 +53,10 @@ void Map::findMax(int source, int destiny)
 
                 if (i == destiny) /* if the current city is the destiny */
                 {
-                    if (auxWeight == 0)                              /* if the current maximal weight of the path is == 0 */
+                    if ((auxWeight == 0) || (mapMatrix[auxCity][i] < auxWeight)) /* if the current maximal weight of the path is == 0 or if the weight of the current highway is lower than the current maximal weight */
                         possibleWeights.push(mapMatrix[auxCity][i]); /* push the weight between city auxCity and city i into the possibleWeights queue */
                     else
-                    {
-                        if (mapMatrix[auxCity][i] < auxWeight) /* if the weight of the current highway is lower than the current maximal weight */
-                            possibleWeights.push(mapMatrix[auxCity][i]);
-                        else
-                            possibleWeights.push(auxWeight);
-                    }
+                        possibleWeights.push(auxWeight);
                 }
                 else
                 {
